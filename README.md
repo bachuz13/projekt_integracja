@@ -116,12 +116,12 @@ Pliki JSON pobrane z portalu BDL (emisje, produkcja przemysłu, zużycie energii
 
 ## 🔧 Instalacja
 
-1. **Klonowanie repozytorium**
-   ```bash
-   git clone https://github.com/twoj-login/integration_project.git
-   cd integration_project
+**Klonowanie repozytorium**
+```bash
+git clone https://github.com/twoj-login/integration_project.git
+cd integration_project
 Utworzenie środowiska wirtualnego
-
+```
 ```bash
 
 python -m venv venv

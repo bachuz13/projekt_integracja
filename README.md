@@ -7,6 +7,7 @@ Projekt ma na celu integrację i analizę danych dotyczących rozwoju przemysłu
 
 ## 📁 Struktura katalogów
 
+```bash
 .
 ├── app/
 │ ├── auth.py
@@ -48,7 +49,7 @@ Projekt ma na celu integrację i analizę danych dotyczących rozwoju przemysłu
 ├── docker-compose.yml
 ├── run_project.ps1
 └── README.md
-
+```
 
 ---
 

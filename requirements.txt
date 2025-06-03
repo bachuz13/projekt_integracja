@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+pydantic
+odmantic
+motor
+python-jose
+passlib[bcrypt]
+fastapi[all]
+uvicorn
+httpx
+python-multipart
+sqlmodel
+pydantic
+pyjwt
+numpy
+matplotlib
+pandas

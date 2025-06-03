@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Logowanie – Integracja Danych</title>
+  <link rel="stylesheet" href="/static/login.css">
+  <script defer src="/static/login.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()">
+    <i class="fas fa-moon"></i>
+  </button>
+  <div class="login-container">
+    <h2><i class="fas fa-lock"></i> Logowanie do systemu</h2>
+    <form onsubmit="login(event)">
+      <input type="text" id="username" placeholder="👤 Login" required>
+      <input type="password" id="password" placeholder="🔑 Hasło" required>
+      <button type="submit">Zaloguj</button>
+      <p id="error" class="error-msg"></p>
+    </form>
+  </div>
+</body>
+</html>

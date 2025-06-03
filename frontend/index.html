@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel użytkownika</title>
+  <script defer src="/static/app.js"></script>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/login";
+      }
+    });
+  </script>
+</head>
+<body>
+  <h1>📊 Panel Integracji Danych</h1>
+
+  <div class="top-bar">
+  <span>👋 Witaj, <strong id="user-name">...</strong></span>
+  <div class="top-bar-buttons">
+    <button onclick="toggleDarkMode()">
+      <i class="fas fa-moon"></i> Dark Mode
+    </button>
+    <button onclick="logout()">🚪 Wyloguj</button>
+  </div>
+</div>
+
+
+   <!-- Import danych -->
+  <section>
+    <h2>📥 Import danych</h2>
+    <select id="collection-import">
+      <option value="produkcja_budowlana">Produkcja Budowlana</option>
+      <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
+      <option value="moc_instalowana">Moc Zainstalowana</option>
+      <option value="zuzycie_energii">Zużycie Energii</option>
+      <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
+      <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
+      <option value="grunty_wylaczone">Grunty Wyłączone</option>
+      <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
+    </select>
+    <select id="import-format">
+      <option value="json" selected>JSON</option>
+      <option value="yaml">YAML</option>
+      <option value="xml">XML</option>
+    </select>
+    <input type="file" id="file-input" accept=".json,.yaml,.yml,.xml">
+    <button onclick="importData()">Importuj dane</button>
+  </section>
+
+  <!-- Eksport danych -->
+  <section>
+    <h2>📤 Eksport danych</h2>
+    <select id="collection-export">
+      <option value="produkcja_budowlana">Produkcja Budowlana</option>
+      <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
+      <option value="moc_instalowana">Moc Zainstalowana</option>
+      <option value="zuzycie_energii">Zużycie Energii</option>
+      <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
+      <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
+      <option value="grunty_wylaczone">Grunty Wyłączone</option>
+      <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
+    </select>
+    <select id="export-format">
+      <option value="json" selected>JSON</option>
+      <option value="yaml">YAML</option>
+      <option value="xml">XML</option>
+    </select>
+    <button onclick="exportData()">Eksportuj dane</button>
+  </section>
+
+  <section>
+  <h2>🔗 Dane z MongoDB (REST API)</h2>
+  <select id="collection-rest">
+    <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
+    <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
+    <option value="grunty_wylaczone">Grunty Wyłączone</option>
+    <option value="moc_instalowana">Moc Zainstalowana</option>
+    <option value="produkcja_budowlana">Produkcja Budowlana</option>
+    <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
+    <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
+    <option value="zuzycie_energii">Zużycie Energii</option>
+  </select>
+  <input type="number" id="filter-year" placeholder="Rok (opcjonalnie)">
+  <input type="text" id="filter-region" placeholder="Region (opcjonalnie)">
+  <select id="sort-order">
+    <option value="asc">Rosnąco</option>
+    <option value="desc">Malejąco</option>
+  </select>
+  <input type="number" id="limit" placeholder="Limit" min="1" value="10">
+  <input type="number" id="page" placeholder="Strona" min="1" value="1">
+  <button onclick="fetchDataFromMongo()">Pobierz dane</button>
+  <pre id="rest-output"></pre>
+</section>
+
+
+  <!-- RAPORT ROCZNY -->
+  <section>
+    <h2>📊 Raport roczny</h2>
+    <select id="collection-report">
+      <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
+      <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
+      <option value="grunty_wylaczone">Grunty Wyłączone</option>
+      <option value="moc_instalowana">Moc Zainstalowana</option>
+      <option value="produkcja_budowlana">Produkcja Budowlana</option>
+      <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
+      <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
+      <option value="zuzycie_energii">Zużycie Energii</option>
+    </select>
+    <input type="number" id="report-year" placeholder="np. 2020" min="2000" max="2025" />
+    <button onclick="generateReport()">Pokaż raport</button>
+    <pre id="report-output"></pre>
+  </section>
+
+  <!-- KORELACJA -->
+  <section>
+    <h2>🔁 Korelacja: Zestawienie Przemysłu i Emisji</h2>
+    <select id="collection1-corr">
+      <option value="produkcja_budowlana">Produkcja Budowlana</option>
+      <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
+      <option value="moc_instalowana">Moc Zainstalowana</option>
+      <option value="zuzycie_energii">Zużycie Energii</option>
+    </select>
+    <select id="collection2-corr">
+      <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
+      <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
+      <option value="grunty_wylaczone">Grunty Wyłączone</option>
+      <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
+    </select>
+    <button onclick="checkCorrelation()">Oblicz korelację</button>
+    <pre id="correlation-output"></pre>
+  </section>
+
+  <!-- WYKRES PNG -->
+  <section>
+    <h2>📈 Wykresy (PNG z backendu)</h2>
+    <select id="collection-png">
+      <option value="produkcja_budowlana" selected>Produkcja Budowlana</option>
+      <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
+      <option value="moc_instalowana">Moc Zainstalowana</option>
+      <option value="zuzycie_energii">Zużycie Energii</option>
+      <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
+      <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
+      <option value="grunty_wylaczone">Grunty Wyłączone</option>
+      <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
+    </select>
+    <button onclick="updatePNG()">Pokaż wykres PNG</button>
+    <br>
+    <img id="chart-png" src="" alt="Wykres">
+  </section>
+
+  <!-- INTERAKTYWNY WYKRES -->
+  <section>
+    <h2>📊 Interaktywny wykres z danych rocznych</h2>
+    <select id="collection-chart">
+      <option value="emisja_zanieczyszczen_gazowych" selected>Emisja Gazowa</option>
+      <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
+      <option value="grunty_wylaczone">Grunty Wyłączone</option>
+      <option value="moc_instalowana">Moc Zainstalowana</option>
+      <option value="produkcja_budowlana">Produkcja Budowlana</option>
+      <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
+      <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
+      <option value="zuzycie_energii">Zużycie Energii</option>
+    </select>
+    <select id="region-chart"></select>
+    <button onclick="drawChart()">Pokaż wykres</button>
+    <canvas id="myChart" width="800" height="400"></canvas>
+  </section>
+</body>
+</html>

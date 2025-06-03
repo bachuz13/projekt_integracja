@@ -1,3 +1,13 @@
+"""
+Plik main.py
+-------------
+Główny plik aplikacji FastAPI:
+- rejestruje endpoint do logowania JWT
+- montuje routery
+- montuje katalog statyczny (frontend)
+- serwuje stronę główną i stronę logowania
+"""
+
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse

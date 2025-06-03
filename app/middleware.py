@@ -1,3 +1,11 @@
+"""
+Plik middleware.py
+-------------------
+Middleware FastAPI sprawdzający nagłówek JWT:
+- przepuszcza wybrane ścieżki bez tokena (np. /login, /token, /static)
+- weryfikuje token JWT w pozostałych endpointach
+"""
+
 from fastapi import Request, HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from jose import jwt, JWTError

@@ -1,3 +1,11 @@
+"""
+Plik rest_api.py
+-----------------
+Zawiera endpoint do pobierania danych z MongoDB:
+- wspiera filtrowanie po kolekcji, regionie, roku, sortowaniu i paginacji
+- wykonuje podstawowe agregacje (sumowanie roczne)
+"""
+
 from fastapi import APIRouter, HTTPException, Query
 from app.database import client
 import re
@@ -28,7 +36,7 @@ async def fetch_data_from_mongo(
         sort_direction = 1 if sort == "asc" else -1
 
         cursor = db[collection].find(query).sort("_id", sort_direction)
-        raw_data = await cursor.to_list(length=None)  # Pobieramy wszystko (bo filtr roku i dynamiczne pola muszą być w Pythonie)
+        raw_data = await cursor.to_list(length=None)
 
         filtered_data = []
         for doc in raw_data:
@@ -60,4 +68,3 @@ async def fetch_data_from_mongo(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Błąd pobierania danych: {str(e)}")
-

@@ -1,3 +1,9 @@
+"""
+Plik schemas.py
+-----------------
+Definiuje schemat wyjściowy (Pydantic) do serializacji danych z bazy.
+"""
+
 from pydantic import BaseModel
 from typing import Dict, Any
 

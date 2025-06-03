@@ -1,3 +1,12 @@
+"""
+Plik chart_routes.py
+----------------------
+Odpowiada za generowanie wykresów:
+- endpoint generujący wykres PNG na podstawie danych z MongoDB
+- endpoint zwracający dane JSON do wykresów interaktywnych na froncie
+- wykorzystuje matplotlib do rysowania wykresów
+"""
+
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from app.database import client
@@ -7,6 +16,7 @@ import re
 
 router = APIRouter()
 
+# Funkcja pomocnicza: wydobywa rok z klucza
 def get_year_from_key(collection_name, key):
     if collection_name in [
         "emisja_zanieczyszczen_gazowych", "emisja_zanieczyszczen_pylowych",
@@ -25,7 +35,7 @@ def get_year_from_key(collection_name, key):
             return int(matches[-1])
     return None
 
-# 🔷 PNG - wykres liniowy
+# Endpoint PNG - wykres liniowy
 @router.get("/charts/{collection_name}.png")
 async def get_chart_png(collection_name: str):
     collection = client["integracja"][collection_name]
@@ -63,7 +73,7 @@ async def get_chart_png(collection_name: str):
 
     return StreamingResponse(buf, media_type="image/png")
 
-# 🔷 JSON - dane interaktywne
+# Endpoint JSON - dane do wykresu interaktywnego
 @router.get("/charts/{collection_name}")
 async def generate_chart(collection_name: str):
     collection = client["integracja"][collection_name]
@@ -85,7 +95,6 @@ async def generate_chart(collection_name: str):
                 except Exception as e:
                     print(f"Błąd w polu {key}: {e}")
 
-    # 🔥 Dodaj sprawdzenie pustych danych
     if not region_data:
         raise HTTPException(status_code=404, detail="Brak danych do interaktywnego wykresu")
 

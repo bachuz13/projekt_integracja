@@ -1,34 +1,51 @@
+/*
+Skrypt front-end (JavaScript)
+------------------------------
+Zarządza interakcją użytkownika z aplikacją FastAPI:
+- logowanie/wylogowywanie
+- import i eksport danych
+- generowanie wykresów PNG i interaktywnych (Chart.js)
+- raporty i korelacje
+*/
+
+// 🔹 Globalny token JWT
 let token = "";
 
+// 🔹 Po załadowaniu strony:
 document.addEventListener("DOMContentLoaded", async () => {
+    // Pobranie tokena JWT i użytkownika z localStorage
     token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
 
+    // Jeśli brak tokena — przekierowanie na stronę logowania
     if (!token) {
         window.location.href = "/login";
     } else {
+        // Wyświetlamy nazwę użytkownika w panelu
         const userNameEl = document.getElementById("user-name");
         if (userNameEl) {
             userNameEl.textContent = user || "użytkowniku";
         }
     }
 
-    // Automatycznie wyświetl PNG i interaktywny wykres po załadowaniu
+    // Automatyczne wyświetlenie wykresu PNG po starcie
     updatePNG();
 
+    // Automatyczne załadowanie regionów i narysowanie wykresu
     const defaultCollection = document.getElementById("collection-chart").value;
     await loadRegions(defaultCollection);
     document.getElementById("region-chart").selectedIndex = 0;
     drawChart();
 });
 
+// 🔹 Wylogowanie
 function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/login";
 }
 
-// Import danych
+// 🔹 Import danych (wysyłka pliku)
 async function importData() {
     const collection = document.getElementById("collection-import").value;
     const format = document.getElementById("import-format").value;
@@ -62,12 +79,12 @@ async function importData() {
     }
 }
 
+// 🔹 Przełączanie trybu jasnego/ciemnego
 function toggleDarkMode() {
-  document.body.classList.toggle("light-mode");
+    document.body.classList.toggle("light-mode");
 }
 
-
-// Eksport danych
+// 🔹 Eksport danych
 async function exportData() {
     const collection = document.getElementById("collection-export").value;
     const format = document.getElementById("export-format").value;
@@ -95,6 +112,7 @@ async function exportData() {
             filename = `${collection}.${format}`;
         }
 
+        // Pobieranie pliku eksportu
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
@@ -109,37 +127,36 @@ async function exportData() {
     }
 }
 
+// 🔹 Pobieranie danych przez REST API
 async function fetchDataFromMongo() {
-  const collection = document.getElementById("collection-rest").value;
-  const year = document.getElementById("filter-year").value;
-  const region = document.getElementById("filter-region").value;
-  const sort = document.getElementById("sort-order").value;
-  const limit = document.getElementById("limit").value;
-  const page = document.getElementById("page").value;
+    const collection = document.getElementById("collection-rest").value;
+    const year = document.getElementById("filter-year").value;
+    const region = document.getElementById("filter-region").value;
+    const sort = document.getElementById("sort-order").value;
+    const limit = document.getElementById("limit").value;
+    const page = document.getElementById("page").value;
 
-  let url = `/external/fetch?collection=${collection}&sort=${sort}&limit=${limit}&page=${page}`;
-  if (year) url += `&year=${year}`;
-  if (region) url += `&region=${region}`;
+    let url = `/external/fetch?collection=${collection}&sort=${sort}&limit=${limit}&page=${page}`;
+    if (year) url += `&year=${year}`;
+    if (region) url += `&region=${region}`;
 
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-    if (!data.sample || data.sample.length === 0) {
-      document.getElementById("rest-output").textContent = "Brak danych.";
-      return;
+        if (!data.sample || data.sample.length === 0) {
+            document.getElementById("rest-output").textContent = "Brak danych.";
+            return;
+        }
+
+        document.getElementById("rest-output").textContent = JSON.stringify(data, null, 2);
+    } catch (error) {
+        console.error("Błąd pobierania danych:", error);
+        document.getElementById("rest-output").textContent = "Błąd pobierania danych.";
     }
-
-    document.getElementById("rest-output").textContent = JSON.stringify(data, null, 2);
-  } catch (error) {
-    console.error("Błąd pobierania danych:", error);
-    document.getElementById("rest-output").textContent = "Błąd pobierania danych.";
-  }
 }
 
-
-
-
+// 🔹 Generowanie raportu
 async function generateReport() {
     const collection = document.getElementById("collection-report").value;
     const year = document.getElementById("report-year").value;
@@ -160,6 +177,7 @@ async function generateReport() {
     }
 }
 
+// 🔹 Sprawdzanie korelacji między dwiema kolekcjami
 async function checkCorrelation() {
     const col1 = document.getElementById("collection1-corr").value;
     const col2 = document.getElementById("collection2-corr").value;
@@ -180,11 +198,13 @@ async function checkCorrelation() {
     }
 }
 
+// 🔹 Wyświetlanie wykresu PNG
 function updatePNG() {
     const collection = document.getElementById("collection-png").value;
     document.getElementById("chart-png").src = `/charts/${collection}.png`;
 }
 
+// 🔹 Ładowanie regionów do selecta
 async function loadRegions(collection) {
     try {
         const response = await fetch(`/charts/${collection}`);
@@ -203,61 +223,59 @@ async function loadRegions(collection) {
     }
 }
 
+// 🔹 Rysowanie wykresu (Chart.js)
 async function drawChart() {
-  const collection = document.getElementById("collection-chart").value;
-  const region = document.getElementById("region-chart").value;
+    const collection = document.getElementById("collection-chart").value;
+    const region = document.getElementById("region-chart").value;
 
-  try {
-    console.log(`Wywołuję: /charts/${collection}`);
-    const response = await fetch(`/charts/${collection}`);
-    const data = await response.json();
+    try {
+        const response = await fetch(`/charts/${collection}`);
+        const data = await response.json();
 
-    console.log("Dane wykresu:", data);
-
-    if (!Array.isArray(data) || data.length === 0) {
-      alert("Brak danych do wykresu.");
-      return;
-    }
-
-    const selectedRegion = data.find(item => item.region === region);
-    if (!selectedRegion) {
-      alert(`Brak danych dla regionu: ${region}`);
-      return;
-    }
-
-    const years = selectedRegion.data.map(item => item.year);
-    const values = selectedRegion.data.map(item => parseFloat(item.amount) || 0);
-
-    const ctx = document.getElementById("myChart").getContext("2d");
-
-    if (window.myChart && typeof window.myChart.destroy === "function") {
-      window.myChart.destroy();
-    }
-
-    window.myChart = new Chart(ctx, {
-      type: "bar", // 🔥 ZMIANA: type na 'bar' (wykres słupkowy)
-      data: {
-        labels: years,
-        datasets: [{
-          label: `${region}`,
-          data: values,
-          backgroundColor: "rgba(75, 192, 192, 0.6)"
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
+        if (!Array.isArray(data) || data.length === 0) {
+            alert("Brak danych do wykresu.");
+            return;
         }
-      }
-    });
-  } catch (error) {
-    console.error("Błąd podczas generowania wykresu:", error);
-    alert("Błąd podczas generowania wykresu.");
-  }
+
+        const selectedRegion = data.find(item => item.region === region);
+        if (!selectedRegion) {
+            alert(`Brak danych dla regionu: ${region}`);
+            return;
+        }
+
+        const years = selectedRegion.data.map(item => item.year);
+        const values = selectedRegion.data.map(item => parseFloat(item.amount) || 0);
+
+        const ctx = document.getElementById("myChart").getContext("2d");
+
+        if (window.myChart && typeof window.myChart.destroy === "function") {
+            window.myChart.destroy();
+        }
+
+        window.myChart = new Chart(ctx, {
+            type: "bar",  // 🔥 Zmieniono wykres na słupkowy (dla lepszej czytelności)
+            data: {
+                labels: years,
+                datasets: [{
+                    label: `${region}`,
+                    data: values,
+                    backgroundColor: "rgba(75, 192, 192, 0.6)"
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Błąd podczas generowania wykresu:", error);
+        alert("Błąd podczas generowania wykresu.");
+    }
 }
 
-
+// 🔹 Obsługa zmiany kolekcji — automatyczne przeładowanie regionów i wykresu
 document.getElementById("collection-chart").addEventListener("change", async () => {
     const collection = document.getElementById("collection-chart").value;
     await loadRegions(collection);

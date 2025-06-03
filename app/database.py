@@ -1,3 +1,11 @@
+"""
+Plik database.py
+-----------------
+Ustawia połączenie z MongoDB Atlas
+- definiuje klienta bazy danych (AsyncIOMotorClient)
+- definiuje silnik ODMantic (AIOEngine)
+"""
+
 from odmantic import AIOEngine
 from motor.motor_asyncio import AsyncIOMotorClient
 

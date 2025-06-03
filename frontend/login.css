@@ -1,31 +1,41 @@
+/* 
+Główny arkusz stylów (styles.css)
+---------------------------------
+Stylizuje panel logowania oraz tryb ciemny/jasny
+*/
+
+/* 🔹 Styl ogólny dla całej strony */
 body {
-    background: linear-gradient(135deg, #121212, #1e1e1e);
-    font-family: "Segoe UI", sans-serif;
-    display: flex;
+    background: linear-gradient(135deg, #121212, #1e1e1e); /* ciemne tło z gradientem */
+    font-family: "Segoe UI", sans-serif; /* czytelny font */
+    display: flex; /* centrowanie kontenera */
     justify-content: center;
     align-items: center;
     height: 100vh;
-    color: #f0f0f0;
+    color: #f0f0f0; /* jasny kolor tekstu */
     margin: 0;
-    transition: background 0.5s;
+    transition: background 0.5s; /* płynne przejście przy zmianie trybu */
 }
 
+/* 🔹 Kontener logowania */
 .login-container {
-    background: #1e1e1e;
+    background: #1e1e1e; /* ciemne tło */
     padding: 2rem;
     border-radius: 15px;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2); /* delikatny glow */
     width: 350px;
     text-align: center;
-    animation: fadeIn 1s ease-out;
+    animation: fadeIn 1s ease-out; /* animacja pojawiania się */
 }
 
+/* 🔹 Nagłówek w kontenerze */
 .login-container h2 {
     margin-bottom: 1rem;
-    color: #61dafb;
+    color: #61dafb; /* niebieski akcent */
     font-size: 1.5rem;
 }
 
+/* 🔹 Pola input */
 .login-container input {
     width: 100%;
     padding: 0.6rem;
@@ -38,11 +48,13 @@ body {
     transition: border-color 0.3s;
 }
 
+/* 🔹 Po zaznaczeniu inputa */
 .login-container input:focus {
     border-color: #61dafb;
     outline: none;
 }
 
+/* 🔹 Przycisk logowania */
 .login-container button {
     width: 100%;
     padding: 0.6rem;
@@ -56,16 +68,19 @@ body {
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
 }
 
+/* 🔹 Po najechaniu na przycisk */
 .login-container button:hover {
     background: linear-gradient(to right, #21a1f1, #61dafb);
     transform: scale(1.05);
 }
 
+/* 🔹 Komunikat błędu */
 .error-msg {
     color: #ff6b6b;
     margin-top: 1rem;
 }
 
+/* 🔹 Przycisk przełączania trybu (Dark/Light) */
 .dark-mode-toggle {
     position: absolute;
     top: 20px;
@@ -78,10 +93,12 @@ body {
     transition: color 0.3s;
 }
 
+/* 🔹 Po najechaniu na przełącznik trybu */
 .dark-mode-toggle:hover {
     color: #ffffff;
 }
 
+/* 🔹 Tryb jasny: tło, kolor tekstu i inputy */
 body.light-mode {
     background: linear-gradient(135deg, #ffffff, #dddddd);
     color: #121212;
@@ -108,7 +125,8 @@ body.light-mode .dark-mode-toggle {
     color: #333;
 }
 
+/* 🔹 Animacja fadeIn (przesunięcie i przezroczystość) */
 @keyframes fadeIn {
-    from {opacity: 0; transform: translateY(-20px);}
-    to {opacity: 1; transform: translateY(0);}
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

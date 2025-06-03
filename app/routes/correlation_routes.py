@@ -1,3 +1,11 @@
+"""
+Plik correlation_routes.py
+----------------------------
+Endpoint obliczający współczynnik korelacji Pearsona między dwoma kolekcjami MongoDB
+- Porównuje wartości dla wspólnych lat
+- Obsługuje regiony
+"""
+
 from fastapi import APIRouter
 from app.database import client
 import numpy as np

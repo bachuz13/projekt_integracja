@@ -3,15 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <title>Panel użytkownika</title>
+  
+  <!-- 🔹 Załączony skrypt aplikacji front-end -->
   <script defer src="/static/app.js"></script>
+
+  <!-- 🔹 Główny arkusz stylów -->
   <link rel="stylesheet" href="/static/styles.css">
+
+  <!-- 🔹 Ikony Font Awesome (np. przycisk wylogowania, tryb ciemny) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- 🔹 Biblioteka Chart.js (do wykresów interaktywnych) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- 🔹 Sprawdzenie tokena JWT przy starcie (dodatkowa ochrona) -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        window.location.href = "/login";
+        window.location.href = "/login";  // Przekierowanie na stronę logowania
       }
     });
   </script>
@@ -19,21 +29,23 @@
 <body>
   <h1>📊 Panel Integracji Danych</h1>
 
+  <!-- 🔹 Pasek powitalny i przyciski -->
   <div class="top-bar">
-  <span>👋 Witaj, <strong id="user-name">...</strong></span>
-  <div class="top-bar-buttons">
-    <button onclick="toggleDarkMode()">
-      <i class="fas fa-moon"></i> Dark Mode
-    </button>
-    <button onclick="logout()">🚪 Wyloguj</button>
+    <span>👋 Witaj, <strong id="user-name">...</strong></span>
+    <div class="top-bar-buttons">
+      <button onclick="toggleDarkMode()">
+        <i class="fas fa-moon"></i> Dark Mode
+      </button>
+      <button onclick="logout()">🚪 Wyloguj</button>
+    </div>
   </div>
-</div>
 
-
-   <!-- Import danych -->
+  <!-- 🔹 Sekcja importu danych -->
   <section>
     <h2>📥 Import danych</h2>
+    <!-- Wybór kolekcji do importu -->
     <select id="collection-import">
+      <!-- Lista kolekcji -->
       <option value="produkcja_budowlana">Produkcja Budowlana</option>
       <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
       <option value="moc_instalowana">Moc Zainstalowana</option>
@@ -43,19 +55,22 @@
       <option value="grunty_wylaczone">Grunty Wyłączone</option>
       <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
     </select>
+    <!-- Wybór formatu importu -->
     <select id="import-format">
       <option value="json" selected>JSON</option>
       <option value="yaml">YAML</option>
       <option value="xml">XML</option>
     </select>
+    <!-- Input pliku -->
     <input type="file" id="file-input" accept=".json,.yaml,.yml,.xml">
     <button onclick="importData()">Importuj dane</button>
   </section>
 
-  <!-- Eksport danych -->
+  <!-- 🔹 Sekcja eksportu danych -->
   <section>
     <h2>📤 Eksport danych</h2>
     <select id="collection-export">
+      <!-- Lista kolekcji -->
       <option value="produkcja_budowlana">Produkcja Budowlana</option>
       <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
       <option value="moc_instalowana">Moc Zainstalowana</option>
@@ -73,35 +88,37 @@
     <button onclick="exportData()">Eksportuj dane</button>
   </section>
 
+  <!-- 🔹 Sekcja REST API -->
   <section>
-  <h2>🔗 Dane z MongoDB (REST API)</h2>
-  <select id="collection-rest">
-    <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
-    <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
-    <option value="grunty_wylaczone">Grunty Wyłączone</option>
-    <option value="moc_instalowana">Moc Zainstalowana</option>
-    <option value="produkcja_budowlana">Produkcja Budowlana</option>
-    <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
-    <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
-    <option value="zuzycie_energii">Zużycie Energii</option>
-  </select>
-  <input type="number" id="filter-year" placeholder="Rok (opcjonalnie)">
-  <input type="text" id="filter-region" placeholder="Region (opcjonalnie)">
-  <select id="sort-order">
-    <option value="asc">Rosnąco</option>
-    <option value="desc">Malejąco</option>
-  </select>
-  <input type="number" id="limit" placeholder="Limit" min="1" value="10">
-  <input type="number" id="page" placeholder="Strona" min="1" value="1">
-  <button onclick="fetchDataFromMongo()">Pobierz dane</button>
-  <pre id="rest-output"></pre>
-</section>
+    <h2>🔗 Dane z MongoDB (REST API)</h2>
+    <select id="collection-rest">
+      <!-- Lista kolekcji -->
+      <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
+      <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
+      <option value="grunty_wylaczone">Grunty Wyłączone</option>
+      <option value="moc_instalowana">Moc Zainstalowana</option>
+      <option value="produkcja_budowlana">Produkcja Budowlana</option>
+      <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
+      <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
+      <option value="zuzycie_energii">Zużycie Energii</option>
+    </select>
+    <input type="number" id="filter-year" placeholder="Rok (opcjonalnie)">
+    <input type="text" id="filter-region" placeholder="Region (opcjonalnie)">
+    <select id="sort-order">
+      <option value="asc">Rosnąco</option>
+      <option value="desc">Malejąco</option>
+    </select>
+    <input type="number" id="limit" placeholder="Limit" min="1" value="10">
+    <input type="number" id="page" placeholder="Strona" min="1" value="1">
+    <button onclick="fetchDataFromMongo()">Pobierz dane</button>
+    <pre id="rest-output"></pre> <!-- Wyświetlanie wyników -->
+  </section>
 
-
-  <!-- RAPORT ROCZNY -->
+  <!-- 🔹 Sekcja raportów -->
   <section>
     <h2>📊 Raport roczny</h2>
     <select id="collection-report">
+      <!-- Lista kolekcji -->
       <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
       <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
       <option value="grunty_wylaczone">Grunty Wyłączone</option>
@@ -113,32 +130,35 @@
     </select>
     <input type="number" id="report-year" placeholder="np. 2020" min="2000" max="2025" />
     <button onclick="generateReport()">Pokaż raport</button>
-    <pre id="report-output"></pre>
+    <pre id="report-output"></pre> <!-- Wyświetlanie raportu -->
   </section>
 
-  <!-- KORELACJA -->
+  <!-- 🔹 Sekcja korelacji -->
   <section>
     <h2>🔁 Korelacja: Zestawienie Przemysłu i Emisji</h2>
     <select id="collection1-corr">
+      <!-- Kolekcja 1 -->
       <option value="produkcja_budowlana">Produkcja Budowlana</option>
       <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
       <option value="moc_instalowana">Moc Zainstalowana</option>
       <option value="zuzycie_energii">Zużycie Energii</option>
     </select>
     <select id="collection2-corr">
+      <!-- Kolekcja 2 -->
       <option value="emisja_zanieczyszczen_gazowych">Emisja Gazowa</option>
       <option value="emisja_zanieczyszczen_pylowych">Emisja Pyłowa</option>
       <option value="grunty_wylaczone">Grunty Wyłączone</option>
       <option value="scieki_przemyslowe">Ścieki Przemysłowe</option>
     </select>
     <button onclick="checkCorrelation()">Oblicz korelację</button>
-    <pre id="correlation-output"></pre>
+    <pre id="correlation-output"></pre> <!-- Wynik korelacji -->
   </section>
 
-  <!-- WYKRES PNG -->
+  <!-- 🔹 Sekcja wykresów PNG -->
   <section>
     <h2>📈 Wykresy (PNG z backendu)</h2>
     <select id="collection-png">
+      <!-- Lista kolekcji -->
       <option value="produkcja_budowlana" selected>Produkcja Budowlana</option>
       <option value="produkcja_sprzedana">Produkcja Sprzedana</option>
       <option value="moc_instalowana">Moc Zainstalowana</option>
@@ -153,7 +173,7 @@
     <img id="chart-png" src="" alt="Wykres">
   </section>
 
-  <!-- INTERAKTYWNY WYKRES -->
+  <!-- 🔹 Sekcja wykresów interaktywnych -->
   <section>
     <h2>📊 Interaktywny wykres z danych rocznych</h2>
     <select id="collection-chart">

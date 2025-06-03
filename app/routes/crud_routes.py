@@ -1,3 +1,10 @@
+"""
+Plik crud_routes.py
+--------------------
+Zawiera proste endpointy do pobierania danych z MongoDB
+- pozwala na pobranie wszystkich dokumentów z danej kolekcji
+"""
+
 from fastapi import APIRouter, HTTPException
 from app.database import engine, client
 from app.models import DynamicRecord

@@ -1,3 +1,12 @@
+"""
+Plik auth.py
+-------------
+Odpowiada za obsługę uwierzytelniania JWT:
+- generuje tokeny dostępu
+- weryfikuje tokeny JWT w nagłówkach
+- definiuje prostą "bazę" użytkowników (na potrzeby prototypu)
+"""
+
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
@@ -16,7 +25,7 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
-# Prosta "baza" użytkowników
+# Prosta "baza" użytkowników (na potrzeby demo)
 fake_users_db = {
     "admin": {
         "username": "admin",

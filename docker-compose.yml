@@ -1,25 +1,34 @@
-version: "3.12"
+# Plik docker-compose.yml
+# -------------------------
+# Konfiguracja kontenerów Docker do uruchomienia aplikacji i MongoDB
+# - definiuje dwie usługi: mongo (baza danych) i api (aplikacja FastAPI)
+# - definiuje volume na dane MongoDB, aby były trwałe
+
+version: "3.12"  # Określa wersję pliku docker-compose
 
 services:
+  # --- Usługa MongoDB ---
   mongo:
-    image: mongo
-    container_name: mongodb
+    image: mongo            # Używa oficjalnego obrazu MongoDB
+    container_name: mongodb # Nazwa kontenera (opcjonalna, ułatwia rozpoznanie)
     ports:
-      - "27017:27017"
+      - "27017:27017"       # Mapowanie portu kontenera na hosta (MongoDB domyślnie działa na 27017)
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_data:/data/db  # Podłącza volume o nazwie "mongodb_data" do ścieżki MongoDB
 
+  # --- Usługa API FastAPI ---
   api:
-    build: .
-    container_name: integration-api
+    build: .               # Buduje obraz z Dockerfile w bieżącym katalogu
+    container_name: integration-api  # Nazwa kontenera API
     ports:
-      - "8000:8000"
+      - "8000:8000"        # Mapowanie portu 8000 aplikacji na port 8000 hosta
     environment:
-      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_URI=mongodb://mongo:27017  # Zmienna środowiskowa z adresem MongoDB (nazwa kontenera: mongo)
     volumes:
-      - .:/app
+      - .:/app             # Podłącza bieżący katalog na hosta do katalogu /app w kontenerze (przydatne do dev)
     depends_on:
-      - mongo
+      - mongo              # Określa zależność: API wystartuje po MongoDB
 
+# --- Volume ---
 volumes:
-  mongodb_data:
+  mongodb_data:            # Definiuje nazwę volume (używany do trwałego przechowywania danych MongoDB)

@@ -1,3 +1,12 @@
+"""
+Plik import_export_routes.py
+------------------------------
+Zawiera endpointy do:
+- importowania danych do MongoDB (formaty JSON, YAML, XML)
+- eksportowania danych z MongoDB w tych samych formatach
+- zapewnia dodatkowe funkcje do sanitizacji tagów i wartości XML
+"""
+
 from fastapi import APIRouter, HTTPException, UploadFile, File, Query
 from fastapi.responses import StreamingResponse
 from app.database import client
@@ -105,9 +114,10 @@ async def export_collection(
     else:
         raise HTTPException(status_code=400, detail="Nieobsługiwany format eksportu.")
 
+# --- Funkcje pomocnicze ---
 def parse_xml(content):
     """
-    Pomocnicza funkcja do parsowania XML na listę słowników.
+    Zamienia plik XML na listę słowników.
     """
     try:
         root = ET.fromstring(content)
@@ -135,7 +145,6 @@ def sanitize_xml_tag(tag):
 def sanitize_xml_value(value):
     """
     Zamienia None na pusty string, escapuje XML, usuwa niedozwolone znaki.
-    Obsługuje listy, dict oraz typy BSON (ObjectId, Decimal128, datetime).
     """
     try:
         if value is None:

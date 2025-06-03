@@ -1,3 +1,11 @@
+"""
+Plik report_routes.py
+-----------------------
+Endpoint do generowania raportów:
+- sumuje wartości dla danego roku i regionów
+- wspiera dynamiczne pola (np. wartości roczne)
+"""
+
 from fastapi import APIRouter, Query
 from app.database import client
 import re

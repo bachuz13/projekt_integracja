@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM debian:bullseye-slim
 
 # Ustaw katalog roboczy
 WORKDIR /app

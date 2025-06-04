@@ -90,8 +90,8 @@ Pliki JSON pobrane z portalu BDL (emisje, produkcja przemysłu, zużycie energii
 - generowania wykresów (np. słupkowe, liniowe),
 - obliczania współczynników korelacji (np. Pearsona) pomiędzy wskaźnikami przemysłu i środowiska,
 - operacji CRUD na danych,
-- importowania/eksportowania danych w formatach JSON/CSV,
-- generowania raportów analitycznych (JSON lub CSV).
+- importowania/eksportowania danych w formatach JSON,YAML,XML,
+- generowania raportów analitycznych (JSON, YAML, XML).
 
 ✅ Analiza danych:
 - agregacja danych według województw, lat lub wskaźników,
